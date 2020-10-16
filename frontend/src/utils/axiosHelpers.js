@@ -15,7 +15,6 @@ const handleError = (error) => {
   if (error.response.status === 401) {
     history.push('/login');
   }
-  console.log('error: ', error);
   return { data: { success: false } };
   // throw (error);
 };

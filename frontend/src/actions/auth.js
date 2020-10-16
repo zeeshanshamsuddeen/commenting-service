@@ -20,3 +20,8 @@ export const userLogin = async (data) => {
   }
   return response;
 }
+
+export const userLogout = () => {
+  localStorage.removeItem('userID');
+  localStorage.removeItem('token');
+}

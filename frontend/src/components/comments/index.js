@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import "./index.css";
 import { getComments, addComment, editComment } from "../../actions/comments";
 import { getUserID } from "../../actions/auth";
+import Header from '../header';
 
 class Comments extends Component {
   constructor() {
@@ -115,7 +116,7 @@ class Comments extends Component {
       <div className="comment">
         <span>{comment.text}</span>
       </div>
-      
+
       <button className="comment-button" onClick={() => this.onClickReply(comment.commentID)}>Reply</button>
       {comment.userID === userID &&
         <button className="comment-button" onClick={() => this.onClickEditComment(comment.commentID)}>Edit</button>}
@@ -130,7 +131,7 @@ class Comments extends Component {
     </div>
   }
 
-  displayCommentHeader = comment => <div className="layout-row justify-content-between">
+  displayCommentHeader = comment => <div className="layout-row justify-content-between comment-header">
     <span>{comment.author}</span>
     <span>{new Date(comment.createdAt).toLocaleDateString("en-US")}</span>
   </div>
@@ -153,17 +154,20 @@ class Comments extends Component {
     const { mainText, comments } = this.state;
 
     return (
-      <div className="layout-column align-items-center justify-content-start" >
-        <div className="w-40 bg-color-grey pa-30">
+      <Fragment>
+        <Header />
+        <div className="layout-column align-items-center justify-content-start" >
+          <div className="w-40 bg-color-grey pa-30">
 
-          <section className="layout-row align-items-center justify-content-center mt-30">
-            <input className="w-60" placeholder="Write you comment here" onChange={this.onChangeMainText} value={mainText} />
-            <button className="main-comment-button" onClick={this.onClickAddComment}>Add Comment</button>
-          </section>
+            <section className="layout-row align-items-center justify-content-center mb-30">
+              <input className="w-60" placeholder="Write you comment here" onChange={this.onChangeMainText} value={mainText} />
+              <button className="main-comment-button" onClick={this.onClickAddComment}>Add Comment</button>
+            </section>
 
-          {this.displayComments(comments)}
+            {this.displayComments(comments)}
+          </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 }

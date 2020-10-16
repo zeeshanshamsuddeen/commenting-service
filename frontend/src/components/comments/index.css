@@ -2,6 +2,11 @@
     border: 1px solid #C0C0C0;
     padding: 10px;
     margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.comment-header {
+    font-weight: 100;
 }
 
 .main-comment-button {
