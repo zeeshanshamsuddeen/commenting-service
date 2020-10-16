@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-export const getComments = (level = 1) => {
-  const queryString = `level=${level}`;
-  return axios.get(`/api/v1/comments?${queryString}`);
-}
+export const getComments = () => axios.get('/api/v1/comments');
 
 export const addComment = data => axios.post('/api/v1/comments', data);
 

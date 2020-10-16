@@ -1,4 +1,18 @@
 .comment {
-    border: 1px solid grey;
+    border: 1px solid #C0C0C0;
     padding: 10px;
+    margin-bottom: 3px;
+}
+
+.main-comment-button {
+    color: #D7931E;
+    font-family: "Comic Sans MS", "cursive", "sans-serif";
+    height: 40px;
+    margin: 5px;
+}
+
+.comment-button {
+    color: #D7931E;
+    font-family: "Comic Sans MS", "cursive", "sans-serif";
+    margin: 1px;
 }
