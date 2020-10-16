@@ -18,7 +18,8 @@ module.exports = async (req, res, next) => {
     if (!verifiedToken) {
       return res.status(403).json({ error: 'Invalid Token' });
     }
-
+    req.userID = verifiedToken.userID;
+    req.username = verifiedToken.username;
     return next();
   } catch (error) {
     return res.status(401).json({ error: 'Failed to authenticate' });

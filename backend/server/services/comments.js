@@ -6,7 +6,7 @@ const { keywords } = require('../constants');
 const getSubComments = async ({ parentID, level }) => {
   const queryObject = {};
   if (level) queryObject.level = level;
-  if (parentID) queryObject.parentID = level;
+  if (parentID) queryObject.parentID = parentID;
   const comments = await db.comments.findWithLean(queryObject);
   for (let i = 0; i < comments.length; i += 1) {
     comments[i].children = await getSubComments({ parentID: comments[i].commentID });
@@ -20,7 +20,7 @@ const getComments = async ({ level }) => {
   return { comments };
 };
 
-const editComment = async (commentID) => {
+const editComment = async (contextObject, commentID) => {
   const commentFromDb = await db.comments.findOneWithLean({ commentID });
   if (!commentFromDb) {
     return { success: false, error: 'Comment Not Found' };
@@ -29,12 +29,16 @@ const editComment = async (commentID) => {
   return { success: true };
 };
 
-const addComment = async ({ level, commentID: parentID, text }) => {
+const addComment = async (contextObject, { level, commentID: parentID, text }) => {
+  const { username, userID } = contextObject;
+  console.log('username, userID: ', username, userID);
   const initObject = {
     commentID: utils.common.getUUID(),
     text,
     level,
     status: keywords.ACTIVE,
+    author: username,
+    userID,
   };
   if (parentID) initObject.parentID = parentID;
   await db.comments.addOne(initObject);

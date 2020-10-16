@@ -8,7 +8,8 @@ const utils = require('../shared/utils');
   const password = 'qwerty123!';
   const account = {
     email: 'test@test.com',
-    userId: utils.common.getUUID(),
+    username: 'Admin',
+    userID: utils.common.getUUID(),
     passwordDigest: utils.common.hashPassword(password),
   };
   await db.accounts.addOne(account);

@@ -2,8 +2,8 @@ const config = require('../config');
 const utils = require('../shared/utils');
 const db = require('../db/dbModule');
 
-const generateToken = (userId) => {
-  const tokenData = { userId };
+const generateToken = (userID, username) => {
+  const tokenData = { userID, username };
   const { secret, issuer, audience } = config.tokens.webUser;
   return utils.token.generate(tokenData, secret, issuer, audience);
 };
@@ -14,11 +14,11 @@ const login = async (loginDetails) => {
   if (!accountFromDB) {
     return { success: false, error: 'Incorrect Password/Email' };
   }
-  const { passwordDigest, userId } = accountFromDB;
+  const { passwordDigest, userID, username } = accountFromDB;
   if (!utils.common.checkPassword(password, passwordDigest)) {
     return { success: false, error: 'Incorrect Password/Email' };
   }
-  return { success: true, userId };
+  return { success: true, userID, username };
 };
 
 module.exports = {

@@ -8,6 +8,8 @@ const initSchema = new Schema({
   text: { type: String, required: true },
   level: { type: Number },
   parentID: { type: String },
+  userID: { type: String, required: true },
+  author: { type: String, required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('comments', initSchema);

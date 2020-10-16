@@ -1,12 +1,12 @@
 const { accounts } = require('../services');
 
 const login = async (req, res) => {
-  const { success, error, userId } = await accounts.login(req.body);
+  const { success, error, userID, username } = await accounts.login(req.body);
   if (!success) {
     return res.status(401).json({ success: false, error });
   }
-  const token = accounts.generateToken(userId);
-  return res.json({ success: true, userId, token });
+  const token = accounts.generateToken(userID, username);
+  return res.json({ success: true, userID, token });
 };
 
 module.exports = {
