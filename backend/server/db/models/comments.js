@@ -6,7 +6,6 @@ const initSchema = new Schema({
   commentID: { type: String, required: true, unique: true },
   status: { type: String, required: true },
   text: { type: String, required: true },
-  level: { type: Number },
   parentID: { type: String },
   userID: { type: String, required: true },
   author: { type: String, required: true },

@@ -1,18 +1,32 @@
 import React, { Component } from "react";
 import "./index.css";
-import { getComments, addComment } from "../../actions/comments";
+import { getComments, addComment, editComment } from "../../actions/comments";
+import { getUserID } from "../../actions/auth";
 
 class Comments extends Component {
   constructor() {
     super();
     this.state = {
       comments: [],
-      text: '',
+      mainText: '',
+      subText: '',
+      userID: getUserID(),
+      editingCommentID: '',
+      replyingParentID: '',
     }
   }
 
   componentDidMount = () => {
     this.fetchComments();
+  }
+
+  resetFields = () => {
+    this.setState({
+      mainText: '',
+      subText: '',
+      editingCommentID: '',
+      replyingParentID: '',
+    });
   }
 
   fetchComments = async () => {
@@ -23,40 +37,112 @@ class Comments extends Component {
     }
   }
 
-  onChangeTitle = (e) => {
-    this.setState({ text: e.target.value });
+  onChangeMainText = (e) => {
+    this.setState({ mainText: e.target.value });
+  }
+
+  onChangeSubText = (e) => {
+    this.setState({ subText: e.target.value });
   }
 
   onClickAddComment = async () => {
-    const { text } = this.state;
-    if (!text) {
+    const { mainText } = this.state;
+    if (!mainText) {
       alert('Invalid Comment');
       return;
     };
-    const { level = 0, id } = this.props.match.params;
-    const initObject = {
-      text,
-      level: Number(level) + 1,
-      taskId: id,
-    };
+    const initObject = { text: mainText };
     await addComment(initObject);
-    this.setState({ text: '' });
+    this.resetFields();
     this.fetchComments();
   }
 
+
+  onClickReplySave = async () => {
+    const { subText, replyingParentID } = this.state;
+    if (!subText) {
+      alert('Invalid Reply');
+      return;
+    };
+    const initObject = {
+      text: subText,
+      parentID: replyingParentID,
+    };
+    await addComment(initObject);
+    this.resetFields();
+    this.fetchComments();
+  }
+
+  onClickEditSave = async () => {
+    const { subText, editingCommentID } = this.state;
+    if (!subText) {
+      alert('Invalid Comment');
+      return;
+    };
+    const initObject = { text: subText };
+    await editComment(editingCommentID, initObject);
+    this.resetFields();
+    this.fetchComments();
+  }
+
+  onClickEditComment = (commentID) => {
+    this.resetFields();
+    this.setState({ editingCommentID: commentID })
+  }
+
+  onClickCancel = () => {
+    this.resetFields();
+  }
+
+  onClickReply = (commentID) => {
+    this.resetFields();
+    this.setState({ replyingParentID: commentID })
+  }
+
   displayComments = (comments) => {
-    return comments.map(comment => <div className="comment">
-      {comment.text}
+    const { userID, editingCommentID, replyingParentID, subText } = this.state;
+    return comments.map(comment => <div>
+      {comment.author}
+      {editingCommentID === comment.commentID
+        ?
+        <div>
+          <div className="comment">
+            <input className="large mx-8" placeholder="reply" onChange={this.onChangeSubText} value={subText} />
+          </div>
+          <button onClick={this.onClickEditSave}>Save</button>
+          <button onClick={this.onClickCancel}>Cancel</button>
+        </div>
+        :
+        <div>
+          <div className="comment">
+            <span>{comment.text}</span>
+          </div>
+          <button onClick={() => this.onClickReply(comment.commentID)}>Reply</button>
+          {comment.userID === userID && <button onClick={() => this.onClickEditComment(comment.commentID)}>Edit</button>}
+
+          {replyingParentID === comment.commentID && <div className="px-20">
+            <div className="comment">
+              <input className="large mx-8" placeholder="reply" onChange={this.onChangeSubText} value={subText} />
+            </div>
+            <button onClick={this.onClickReplySave}>Save</button>
+            <button onClick={this.onClickCancel}>Cancel</button>
+          </div>}
+
+        </div>
+      }
+      <div className="px-20">
+        {this.displayComments(comment.children)}
+      </div>
     </div>)
   }
 
   render() {
-    const { text, comments } = this.state;
+    const { mainText, comments } = this.state;
 
     return (
       <div className="layout-column align-items-center justify-content-start" >
         <section className="layout-row align-items-center justify-content-center mt-30">
-          <input type="text" className="large mx-8" placeholder="Comment" onChange={this.onChangeTitle} value={text} />
+          <input type="mainText" className="large mx-8" placeholder="Comment" onChange={this.onChangeMainText} value={mainText} />
           <button onClick={this.onClickAddComment}>Add Comment</button>
         </section>
 
